@@ -36,6 +36,7 @@ export default function Home() {
   const [pendingFormation, setPendingFormation] = useState<FormationType | null>(formationId);
   const [pendingMentality, setPendingMentality] = useState<MentalityType | null>(mentality);
   const [pendingBlindMode, setPendingBlindMode] = useState(blindMode);
+  const [contactCopied, setContactCopied] = useState(false);
   const loadedShareRef = useRef(false);
   const savedDraftRef = useRef<string | null>(null);
 
@@ -50,6 +51,32 @@ export default function Home() {
   const handleSetupStart = () => {
     if (!pendingFormation || !pendingMentality) return;
     setSetup(pendingFormation, pendingMentality, pendingBlindMode);
+  };
+
+  const handleContactCopy = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(CONTACT_EMAIL);
+          return;
+        } catch {
+          // Fall back below when browser clipboard permissions are strict.
+        }
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = CONTACT_EMAIL;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    } finally {
+      setContactCopied(true);
+      window.setTimeout(() => setContactCopied(false), 1800);
+    }
   };
 
   const isTeamFull = selectedPlayers.filter((p) => p !== null).length === 11;
@@ -96,19 +123,25 @@ export default function Home() {
               <h1 className="text-2xl font-black italic tracking-tighter uppercase">TURNUVA MODU</h1>
            </div>
            <div className="flex items-center gap-3">
-            <a
-              href={CONTACT_MAILTO}
+            <button
+              type="button"
+              onClick={handleContactCopy}
               className="grid h-11 w-11 place-items-center border border-white/20 text-yellow-500 transition-colors hover:bg-white/10"
-              aria-label="Iletisim"
-              title="Iletisim"
+              aria-label="Mail adresini kopyala"
+              title="Mail adresini kopyala"
             >
               <Mail size={20} />
-            </a>
+            </button>
             <button onClick={toggleTheme} className="p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
            </div>
         </header>
+        {contactCopied && (
+          <div className="fixed right-5 top-24 z-[100] border-2 border-black bg-yellow-500 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]">
+            Mail kopyalandi
+          </div>
+        )}
         <div className="flex-1 p-4 lg:p-10 overflow-y-auto">
           <Tournament userRating={teamRating} />
         </div>
@@ -127,18 +160,25 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-3">
-          <a
-            href={CONTACT_MAILTO}
+          <button
+            type="button"
+            onClick={handleContactCopy}
             className={`grid h-12 w-12 place-items-center border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-white text-black'}`}
-            aria-label="Iletisim"
-            title="Iletisim"
+            aria-label="Mail adresini kopyala"
+            title="Mail adresini kopyala"
           >
             <Mail size={22} />
-          </a>
+          </button>
           <button onClick={toggleTheme} className={`p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
             {isDark ? <Sun size={24} /> : <Moon size={24} />}
           </button>
         </div>
+
+        {contactCopied && (
+          <div className="fixed right-5 top-24 z-[100] border-2 border-black bg-yellow-500 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]">
+            Mail kopyalandi
+          </div>
+        )}
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
