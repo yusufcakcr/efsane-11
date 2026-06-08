@@ -33,8 +33,6 @@ export default function Home() {
   const setupComplete = formationId !== null && mentality !== null;
 
   const [appPhase, setAppPhase] = useState<'draft' | 'tournament'>('draft');
-  const [headerClicks, setHeaderClicks] = useState(0);
-  const [easterEgg, setEasterEgg] = useState<{title: string, sub: string, color: string} | null>(null);
   const [pendingFormation, setPendingFormation] = useState<FormationType | null>(formationId);
   const [pendingMentality, setPendingMentality] = useState<MentalityType | null>(mentality);
   const [pendingBlindMode, setPendingBlindMode] = useState(blindMode);
@@ -52,26 +50,6 @@ export default function Home() {
   const handleSetupStart = () => {
     if (!pendingFormation || !pendingMentality) return;
     setSetup(pendingFormation, pendingMentality, pendingBlindMode);
-  };
-
-  const handleHeaderClick = () => {
-    const gsCount = selectedPlayers.filter(p => p?.id.startsWith('gs')).length;
-    const fbCount = selectedPlayers.filter(p => p?.id.startsWith('fb')).length;
-    const bjkCount = selectedPlayers.filter(p => p?.id.startsWith('bjk')).length;
-    let memeData = null; let voiceText = "";
-    if (gsCount >= 3) { memeData = { title: "LOOK AT THE TABELA!", sub: "İMPARATOR MODU", color: "from-red-600 to-yellow-500" }; voiceText = "Look at the tabela!"; }
-    else if (fbCount >= 3) { memeData = { title: "AÇ KAPIYI GARDİYAN!", sub: "BAŞKAN MODU", color: "from-blue-700 to-yellow-400" }; voiceText = "Aç kapıyı gardiyan!"; }
-    else if (bjkCount >= 3) { memeData = { title: "KOŞMADIM AMA ATTIM!", sub: "SERGEN MODU", color: "from-zinc-900 to-zinc-500" }; voiceText = "Koşmadım ama attım."; }
-    else { memeData = { title: "MEKANIN SAHİBİ GELDİ!", sub: "EFSANELER SAHADA", color: "from-purple-600 to-blue-600" }; voiceText = "Mekanın sahibi geldi."; }
-    const newClicks = headerClicks + 1; setHeaderClicks(newClicks);
-    if (newClicks >= 3) {
-      setEasterEgg(memeData); setHeaderClicks(0);
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(voiceText); msg.lang = 'tr-TR'; msg.rate = 0.9; window.speechSynthesis.speak(msg);
-      }
-      setTimeout(() => setEasterEgg(null), 4000);
-    }
   };
 
   const isTeamFull = selectedPlayers.filter((p) => p !== null).length === 11;
@@ -144,7 +122,7 @@ export default function Home() {
       {/* HEADER */}
       <header className={`p-6 flex justify-between items-center border-b-2 border-black transition-colors duration-300 ${isDark ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
         <div className="flex flex-col">
-           <h1 onClick={handleHeaderClick} className="text-4xl font-black italic tracking-tighter leading-none cursor-pointer select-none">EFSANE-11</h1>
+           <h1 className="text-4xl font-black italic tracking-tighter leading-none">EFSANE-11</h1>
            <div className="text-xs uppercase font-bold tracking-[0.2em] opacity-40 mt-1">Kadro Kur • Simüle Et • Kazan</div>
         </div>
 
@@ -161,15 +139,6 @@ export default function Home() {
             {isDark ? <Sun size={24} /> : <Moon size={24} />}
           </button>
         </div>
-
-        {easterEgg && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-md">
-            <div className={`bg-gradient-to-br ${easterEgg.color} text-white p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] border-4 border-black animate-in zoom-in duration-300 text-center`}>
-               <h2 className="text-7xl font-black italic mb-4 drop-shadow-2xl">{easterEgg.title}</h2>
-               <p className="text-2xl font-bold opacity-90 tracking-widest uppercase">{easterEgg.sub}</p>
-            </div>
-          </div>
-        )}
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
