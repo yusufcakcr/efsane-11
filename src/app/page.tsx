@@ -1,0 +1,259 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Pitch from '@/components/Pitch';
+import PlayerList from '@/components/PlayerList';
+import Tournament from '@/components/Tournament';
+import SquadPanel from '@/components/SquadPanel';
+import ShareExportPanel from '@/components/ShareExportPanel';
+import { useTeamStore, MentalityType } from '@/store/useTeamStore';
+import { Sun, Moon, Shield, Flame, Activity, Settings2, Trophy, PencilLine } from 'lucide-react';
+import { FORMATIONS, FormationType } from '@/lib/formations';
+import { decodeShareCode } from '@/lib/shareCode';
+import { saveTeamSnapshot } from '@/lib/localStats';
+
+export default function Home() {
+  const selectedPlayers = useTeamStore((state) => state.selectedPlayers);
+  const teamRating = useTeamStore((state) => state.teamRating);
+  const formationId = useTeamStore((state) => state.formation);
+  const mentality = useTeamStore((state) => state.mentality);
+  const blindMode = useTeamStore((state) => state.blindMode);
+  const setSetup = useTeamStore((state) => state.setSetup);
+  const loadSharedTeam = useTeamStore((state) => state.loadSharedTeam);
+  const captainId = useTeamStore((state) => state.captainId);
+  const theme = useTeamStore((state) => state.theme);
+  const toggleTheme = useTeamStore((state) => state.toggleTheme);
+  const squadName = useTeamStore((state) => state.squadName);
+  const setSquadName = useTeamStore((state) => state.setSquadName);
+
+  const isDark = theme === 'dark';
+  const setupComplete = formationId !== null && mentality !== null;
+
+  const [appPhase, setAppPhase] = useState<'draft' | 'tournament'>('draft');
+  const [headerClicks, setHeaderClicks] = useState(0);
+  const [easterEgg, setEasterEgg] = useState<{title: string, sub: string, color: string} | null>(null);
+  const [pendingFormation, setPendingFormation] = useState<FormationType | null>(formationId);
+  const [pendingMentality, setPendingMentality] = useState<MentalityType | null>(mentality);
+  const [pendingBlindMode, setPendingBlindMode] = useState(blindMode);
+  const loadedShareRef = useRef(false);
+  const savedDraftRef = useRef<string | null>(null);
+
+  const handleFormationSelect = (nextFormation: FormationType) => {
+    setPendingFormation(nextFormation);
+  };
+
+  const handleMentalitySelect = (nextMentality: MentalityType) => {
+    setPendingMentality(nextMentality);
+  };
+
+  const handleSetupStart = () => {
+    if (!pendingFormation || !pendingMentality) return;
+    setSetup(pendingFormation, pendingMentality, pendingBlindMode);
+  };
+
+  const handleHeaderClick = () => {
+    const gsCount = selectedPlayers.filter(p => p?.id.startsWith('gs')).length;
+    const fbCount = selectedPlayers.filter(p => p?.id.startsWith('fb')).length;
+    const bjkCount = selectedPlayers.filter(p => p?.id.startsWith('bjk')).length;
+    let memeData = null; let voiceText = "";
+    if (gsCount >= 3) { memeData = { title: "LOOK AT THE TABELA!", sub: "İMPARATOR MODU", color: "from-red-600 to-yellow-500" }; voiceText = "Look at the tabela!"; }
+    else if (fbCount >= 3) { memeData = { title: "AÇ KAPIYI GARDİYAN!", sub: "BAŞKAN MODU", color: "from-blue-700 to-yellow-400" }; voiceText = "Aç kapıyı gardiyan!"; }
+    else if (bjkCount >= 3) { memeData = { title: "KOŞMADIM AMA ATTIM!", sub: "SERGEN MODU", color: "from-zinc-900 to-zinc-500" }; voiceText = "Koşmadım ama attım."; }
+    else { memeData = { title: "MEKANIN SAHİBİ GELDİ!", sub: "EFSANELER SAHADA", color: "from-purple-600 to-blue-600" }; voiceText = "Mekanın sahibi geldi."; }
+    const newClicks = headerClicks + 1; setHeaderClicks(newClicks);
+    if (newClicks >= 3) {
+      setEasterEgg(memeData); setHeaderClicks(0);
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(voiceText); msg.lang = 'tr-TR'; msg.rate = 0.9; window.speechSynthesis.speak(msg);
+      }
+      setTimeout(() => setEasterEgg(null), 4000);
+    }
+  };
+
+  const isTeamFull = selectedPlayers.filter((p) => p !== null).length === 11;
+  const hasCaptain = Boolean(captainId && selectedPlayers.some((player) => player?.id === captainId));
+  const canStartTournament = isTeamFull && hasCaptain;
+
+  useEffect(() => {
+    if (loadedShareRef.current) return;
+    loadedShareRef.current = true;
+
+    const code = new URLSearchParams(window.location.search).get('team');
+    if (!code) return;
+
+    const sharedTeam = decodeShareCode(code);
+    if (!sharedTeam) return;
+
+    loadSharedTeam(sharedTeam);
+  }, [loadSharedTeam]);
+
+  useEffect(() => {
+    if (!isTeamFull || !formationId || !hasCaptain) return;
+
+    const playerIds = selectedPlayers.map((player) => player?.id ?? null);
+    const draftKey = [formationId, captainId, playerIds.join('|')].join(':');
+    if (savedDraftRef.current === draftKey) return;
+
+    savedDraftRef.current = draftKey;
+    saveTeamSnapshot({
+      formation: formationId,
+      rating: teamRating,
+      captainId,
+      playerIds,
+      outcome: 'draft',
+      headline: 'Kadro tamamlandı',
+    });
+  }, [captainId, formationId, hasCaptain, isTeamFull, selectedPlayers, teamRating]);
+
+  if (appPhase === 'tournament') {
+    return (
+      <main className={`min-h-screen flex flex-col transition-colors duration-300 font-mono ${isDark ? 'bg-zinc-950 text-white' : 'bg-zinc-100 text-black'}`}>
+        <header className="p-5 flex justify-between items-center border-b-2 border-black bg-zinc-900 text-white">
+           <div className="flex items-center gap-3">
+              <Trophy size={24} className="text-yellow-500" />
+              <h1 className="text-2xl font-black italic tracking-tighter uppercase">TURNUVA MODU</h1>
+           </div>
+           <button onClick={toggleTheme} className="p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+           </button>
+        </header>
+        <div className="flex-1 p-4 lg:p-10 overflow-y-auto">
+          <Tournament userRating={teamRating} />
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={`min-h-screen flex flex-col transition-colors duration-300 font-mono ${isDark ? 'bg-zinc-950 text-white' : 'bg-zinc-100 text-black'}`}>
+      
+      {/* HEADER */}
+      <header className={`p-6 flex justify-between items-center border-b-2 border-black transition-colors duration-300 ${isDark ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
+        <div className="flex flex-col">
+           <h1 onClick={handleHeaderClick} className="text-4xl font-black italic tracking-tighter leading-none cursor-pointer select-none">EFSANE-11</h1>
+           <div className="text-xs uppercase font-bold tracking-[0.2em] opacity-40 mt-1">Kadro Kur • Simüle Et • Kazan</div>
+        </div>
+
+        <button onClick={toggleTheme} className={`p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
+          {isDark ? <Sun size={24} /> : <Moon size={24} />}
+        </button>
+
+        {easterEgg && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-md">
+            <div className={`bg-gradient-to-br ${easterEgg.color} text-white p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] border-4 border-black animate-in zoom-in duration-300 text-center`}>
+               <h2 className="text-7xl font-black italic mb-4 drop-shadow-2xl">{easterEgg.title}</h2>
+               <p className="text-2xl font-bold opacity-90 tracking-widest uppercase">{easterEgg.sub}</p>
+            </div>
+          </div>
+        )}
+      </header>
+
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          
+           {!setupComplete ? (
+           <div className={`w-full lg:w-80 p-8 border-r-2 border-black flex flex-col gap-6 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-zinc-900/80' : 'bg-zinc-50'}`}>
+              <div>
+                 <div className="flex items-center gap-2 mb-4 opacity-60">
+                    <PencilLine size={18} />
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-yellow-500">KADRO ADI</h3>
+                 </div>
+                 <input
+                   value={squadName}
+                   onChange={(event) => setSquadName(event.target.value)}
+                   maxLength={32}
+                   className={`w-full border-2 border-black px-4 py-4 text-sm font-black uppercase outline-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${isDark ? 'bg-zinc-950 text-white' : 'bg-white text-black'}`}
+                   placeholder="Efsane 11"
+                 />
+              </div>
+
+              <div>
+                 <div className="flex items-center gap-2 mb-5 opacity-60">
+                    <Settings2 size={18} />
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-yellow-500">DİZİLİŞ</h3>
+                 </div>
+                 <div className="grid grid-cols-2 gap-2">
+                    {FORMATIONS.map(f => (
+                      <button key={f.id} onClick={() => handleFormationSelect(f.id)} 
+                        className={`p-3 text-xs font-black border-2 border-black transition-all ${pendingFormation === f.id ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
+                        {f.id}
+                      </button>
+                    ))}
+                </div>
+             </div>
+
+             <div>
+                 <div className="flex items-center gap-2 mb-5 opacity-60">
+                    <Activity size={18} />
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-yellow-500">ZİHNİYET</h3>
+                 </div>
+                 <div className="flex flex-col gap-2">
+                    {(['Gegenpress', 'Balanced', 'ParkTheBus'] as MentalityType[]).map(m => (
+                      <button key={m} onClick={() => handleMentalitySelect(m)} 
+                        className={`p-3 text-xs font-black border-2 border-black transition-all text-left px-5 ${pendingMentality === m ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
+                        {m === 'Gegenpress' ? 'HÜCUM (GEGENPRESS)' : m === 'ParkTheBus' ? 'SAVUNMA (OTOBÜSÜ ÇEK)' : 'DENGELİ'}
+                        {m === 'Gegenpress' && <Flame size={12} className="inline ml-2 text-red-500" />}
+                       {m === 'ParkTheBus' && <Shield size={12} className="inline ml-2 text-blue-500" />}
+                     </button>
+                   ))}
+                </div>
+             </div>
+
+             <div>
+                <div className="flex items-center gap-2 mb-5 opacity-60">
+                    <Shield size={18} />
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-yellow-500">ZORLUK</h3>
+                 </div>
+                 <button onClick={() => setPendingBlindMode(!pendingBlindMode)} 
+                   className={`w-full p-4 text-xs font-black border-2 border-black transition-all ${pendingBlindMode ? 'bg-purple-700 text-white shadow-none translate-x-[2px] translate-y-[2px]' : 'bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-100'}`}>
+                   {pendingBlindMode ? 'GİZLİLİK MODU (??)' : 'KLASİK MOD (REYTING)'}
+                 </button>
+              </div>
+
+              <div className="mt-auto pt-8 border-t border-black/10 space-y-4">
+                 <button
+                   onClick={handleSetupStart}
+                   disabled={!pendingFormation || !pendingMentality}
+                   className={`w-full py-5 border-4 border-black font-black text-2xl italic tracking-tighter transition-all ${
+                     pendingFormation && pendingMentality
+                       ? 'bg-yellow-500 text-black shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none'
+                       : 'bg-zinc-300 text-zinc-500 cursor-not-allowed opacity-60'
+                   }`}
+                 >
+                   KADRO SEÇİMİNE GEÇ
+                 </button>
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-45 leading-relaxed">
+                   Diziliş, zihniyet ve zorluk hazırsa draft panelini aç.
+                 </p>
+              </div>
+           </div>
+           ) : (
+             <PlayerList side="left" />
+           )}
+           
+           {/* CENTER: PITCH */}
+          <div className="flex-1 p-4 lg:p-12 flex flex-col items-center justify-center overflow-y-auto bg-black/5">
+            <div className="w-full max-w-2xl relative">
+              <Pitch />
+              
+              <button 
+                onClick={() => canStartTournament && setAppPhase('tournament')}
+                disabled={!canStartTournament}
+                className={`mt-10 w-full py-8 font-black text-4xl italic tracking-tighter transition-all border-4 border-black
+                  ${!canStartTournament
+                    ? 'bg-zinc-300 text-zinc-500 cursor-not-allowed opacity-50' 
+                    : 'bg-green-600 text-white shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-0 active:translate-y-0'}
+                `}
+              >
+                {!isTeamFull ? `KADROYU TAMAMLA (${selectedPlayers.filter(p => p !== null).length}/11)` : !hasCaptain ? 'KAPTAN SEC' : 'TURNUVAYI BAŞLAT ⚔️'}
+              </button>
+              {setupComplete && <ShareExportPanel isTeamFull={isTeamFull} hasCaptain={hasCaptain} />}
+            </div>
+          </div>
+
+           {setupComplete && <SquadPanel />}
+
+      </div>
+    </main>
+  );
+}
