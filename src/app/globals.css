@@ -60,6 +60,69 @@ body {
   display: none;
 }
 
+.game-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform, filter;
+  transition:
+    transform 180ms cubic-bezier(.2,.85,.2,1),
+    box-shadow 180ms ease,
+    filter 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.game-button::after {
+  content: "";
+  position: absolute;
+  inset: -45% -85%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%);
+  opacity: 0;
+  transform: translateX(-60%) skewX(-18deg);
+}
+
+.game-button:hover:not(:disabled) {
+  transform: translate(-2px, -2px) scale(1.015) !important;
+  filter: brightness(1.08) saturate(1.12);
+}
+
+.game-button:hover:not(:disabled)::after {
+  animation: buttonShine 680ms ease-out both;
+}
+
+.game-button:active:not(:disabled) {
+  transform: translate(2px, 2px) scale(0.985) !important;
+  filter: brightness(0.98);
+}
+
+.game-button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+
+.game-button:disabled {
+  transform: none !important;
+  filter: grayscale(0.35);
+}
+
+.game-button-major:hover:not(:disabled) {
+  transform: translate(-3px, -3px) scale(1.025) !important;
+}
+
+.game-button-selected:not(:disabled) {
+  box-shadow: 0 0 0 2px #facc15, 0 0 20px rgba(250,204,21,0.72), 4px 4px 0 #000;
+  filter: saturate(1.18);
+  animation: buttonSelectedPulse 1500ms ease-in-out infinite;
+}
+
+.game-button-selected:hover:not(:disabled) {
+  filter: brightness(1.1) saturate(1.25);
+}
+
 .player-card {
   isolation: isolate;
   overflow: hidden;
@@ -157,6 +220,29 @@ body {
   }
 }
 
+@keyframes buttonShine {
+  0% {
+    opacity: 0;
+    transform: translateX(-60%) skewX(-18deg);
+  }
+  28% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(60%) skewX(-18deg);
+  }
+}
+
+@keyframes buttonSelectedPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #facc15, 0 0 16px rgba(250,204,21,0.55), 4px 4px 0 #000;
+  }
+  50% {
+    box-shadow: 0 0 0 3px #facc15, 0 0 30px rgba(250,204,21,0.9), 5px 5px 0 #000;
+  }
+}
+
 @keyframes cardScan {
   0% {
     opacity: 0;
@@ -223,5 +309,14 @@ body {
   100% {
     opacity: 0;
     transform: translateY(-8px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-button,
+  .game-button::after,
+  .game-button-selected {
+    animation: none !important;
+    transition: none !important;
   }
 }

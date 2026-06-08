@@ -146,7 +146,7 @@ export default function ShareExportPanel({ isTeamFull, hasCaptain }: ShareExport
         <button
           type="button"
           onClick={handleCopyLink}
-          className="flex items-center justify-center gap-2 border-2 border-black bg-yellow-500 px-3 py-3 text-[11px] font-black uppercase text-black transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+          className="game-button flex items-center justify-center gap-2 border-2 border-black bg-yellow-500 px-3 py-3 text-[11px] font-black uppercase text-black transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
         >
           <Copy size={14} />
           Link
@@ -155,7 +155,7 @@ export default function ShareExportPanel({ isTeamFull, hasCaptain }: ShareExport
           type="button"
           onClick={() => handleDownload('story')}
           disabled={isExporting}
-          className="flex items-center justify-center gap-2 border-2 border-black bg-zinc-950 px-3 py-3 text-[11px] font-black uppercase text-white transition-all hover:bg-black disabled:opacity-50"
+          className="game-button flex items-center justify-center gap-2 border-2 border-black bg-zinc-950 px-3 py-3 text-[11px] font-black uppercase text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-black disabled:opacity-50"
         >
           <Download size={14} />
           Story
@@ -164,7 +164,7 @@ export default function ShareExportPanel({ isTeamFull, hasCaptain }: ShareExport
           type="button"
           onClick={() => handleDownload('square')}
           disabled={isExporting}
-          className="flex items-center justify-center gap-2 border-2 border-black bg-zinc-950 px-3 py-3 text-[11px] font-black uppercase text-white transition-all hover:bg-black disabled:opacity-50"
+          className="game-button flex items-center justify-center gap-2 border-2 border-black bg-zinc-950 px-3 py-3 text-[11px] font-black uppercase text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-black disabled:opacity-50"
         >
           <ImageIcon size={14} />
           Kare

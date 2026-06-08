@@ -86,9 +86,9 @@ export default function PlayerList({ side = 'right' }: PlayerListProps) {
                   key={player.id}
                   type="button"
                   onClick={() => setCaptain(player.id)}
-                  className={`w-full border-2 border-black p-4 text-left transition-all ${
+                  className={`game-button w-full border-2 border-black p-4 text-left transition-all ${
                     isCaptain
-                      ? 'bg-yellow-500 text-black shadow-none translate-x-1 translate-y-1'
+                      ? 'game-button-selected bg-yellow-500 text-black'
                       : isDark
                         ? 'bg-zinc-950 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-800'
                         : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-100'
@@ -161,14 +161,14 @@ export default function PlayerList({ side = 'right' }: PlayerListProps) {
         <div className="grid grid-cols-2 border-2 border-black bg-black text-[10px] font-black uppercase tracking-widest">
           <button
             onClick={() => autoRoll && toggleAutoRoll()}
-            className={`px-3 py-2 transition-colors ${!autoRoll ? 'bg-yellow-500 text-black' : 'text-white/55 hover:text-white'}`}
+            className={`game-button px-3 py-2 transition-colors ${!autoRoll ? 'bg-yellow-500 text-black' : 'text-white/55 hover:text-white'}`}
             aria-pressed={!autoRoll}
           >
             Manuel
           </button>
           <button
             onClick={() => !autoRoll && toggleAutoRoll()}
-            className={`px-3 py-2 transition-colors ${autoRoll ? 'bg-yellow-500 text-black' : 'text-white/55 hover:text-white'}`}
+            className={`game-button px-3 py-2 transition-colors ${autoRoll ? 'bg-yellow-500 text-black' : 'text-white/55 hover:text-white'}`}
             aria-pressed={autoRoll}
           >
             Oto
@@ -183,11 +183,11 @@ export default function PlayerList({ side = 'right' }: PlayerListProps) {
                 {rerollsLeft} re-roll kaldı
               </div>
               <button onClick={() => executeRollAnimation(rollTeam)} disabled={rerollsLeft <= 0}
-                className="flex-1 border-2 border-black bg-zinc-900 text-yellow-400 text-[11px] font-black uppercase py-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:grayscale hover:bg-black">
+                className="game-button flex-1 border-2 border-black bg-zinc-900 text-yellow-400 text-[11px] font-black uppercase py-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:grayscale hover:bg-black">
                 Takım
               </button>
               <button onClick={() => executeRollAnimation(rollYear)} disabled={rerollsLeft <= 0}
-                className="flex-1 border-2 border-black bg-zinc-900 text-yellow-400 text-[11px] font-black uppercase py-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:grayscale hover:bg-black">
+                className="game-button flex-1 border-2 border-black bg-zinc-900 text-yellow-400 text-[11px] font-black uppercase py-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:grayscale hover:bg-black">
                 Sezon
               </button>
            </div>
@@ -230,7 +230,7 @@ export default function PlayerList({ side = 'right' }: PlayerListProps) {
               </div>
               <button
                 onClick={() => executeRollAnimation(rollSquad)}
-                className="mt-5 w-full py-4 bg-yellow-500 text-black font-black text-2xl italic tracking-tighter border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all active:bg-yellow-400"
+                className="game-button game-button-major mt-5 w-full py-4 bg-yellow-500 text-black font-black text-2xl italic tracking-tighter border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all active:bg-yellow-400"
               >
                 Kadro Çek
               </button>

@@ -299,7 +299,7 @@ export default function Tournament({ userRating }: { userRating: number }) {
       
       {showHeadlineOverlay && headline && (
         <div className="absolute inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
-           <button onClick={() => setShowHeadlineOverlay(false)} className="absolute top-8 right-8 p-4 bg-red-600 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"><X size={40} /></button>
+           <button onClick={() => setShowHeadlineOverlay(false)} className="game-button absolute top-8 right-8 p-4 bg-red-600 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"><X size={40} /></button>
            <div ref={headlineRef} className="bg-white text-black p-10 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-3xl mb-10 font-serif">
               <p className="text-right text-xs font-black border-b-2 border-black pb-2 mb-6 uppercase tracking-widest">EFSANE 11 GAZETESİ - ÖZEL BASKI</p>
               <h1 className="text-6xl font-black mb-6 leading-none tracking-tighter uppercase italic">{headline.title}</h1>
@@ -307,21 +307,21 @@ export default function Tournament({ userRating }: { userRating: number }) {
               <p className="text-2xl font-bold leading-tight">{headline.sub}</p>
            </div>
            <div className="flex gap-6">
-              <button onClick={downloadHeadline} className="px-10 py-4 bg-red-600 text-white font-black text-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"><Share2 size={24} className="inline mr-2" /> MANŞETİ İNDİR</button>
-              <button onClick={() => setShowHeadlineOverlay(false)} className="px-10 py-4 bg-zinc-700 text-white font-black text-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all">İNCELE</button>
+              <button onClick={downloadHeadline} className="game-button px-10 py-4 bg-red-600 text-white font-black text-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"><Share2 size={24} className="inline mr-2" /> MANŞETİ İNDİR</button>
+              <button onClick={() => setShowHeadlineOverlay(false)} className="game-button px-10 py-4 bg-zinc-700 text-white font-black text-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all">İNCELE</button>
            </div>
         </div>
       )}
 
       {showPitchPreview && (
         <div className="fixed inset-0 bg-black/95 z-[70] flex flex-col items-center justify-center p-4">
-           <button onClick={() => setShowPitchPreview(false)} className="absolute top-6 right-6 p-3 bg-red-600 border-2 border-black text-white"><X size={32} /></button>
+           <button onClick={() => setShowPitchPreview(false)} className="game-button absolute top-6 right-6 p-3 bg-red-600 border-2 border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"><X size={32} /></button>
            <div className="w-full max-w-5xl h-[85vh] flex items-center justify-center">
               <div className="scale-[0.4] sm:scale-[0.6] md:scale-[0.75] lg:scale-[0.85] xl:scale-95 transition-transform duration-500 overflow-visible">
                 <div ref={pitchRef} className="p-10 bg-[#2d4d3a] border-4 border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)]"><Pitch /></div>
               </div>
            </div>
-           <button onClick={downloadTeamPitch} className="mt-8 px-14 py-5 bg-green-600 text-white font-black text-3xl border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">RESMİ İNDİR</button>
+           <button onClick={downloadTeamPitch} className="game-button game-button-major mt-8 px-14 py-5 bg-green-600 text-white font-black text-3xl border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">RESMİ İNDİR</button>
         </div>
       )}
 
@@ -330,9 +330,9 @@ export default function Tournament({ userRating }: { userRating: number }) {
           <div className="flex items-center gap-4"><Trophy className="text-yellow-500" size={40} /> <span className="text-4xl font-black italic tracking-tighter uppercase">{getRoundName()}</span></div>
           
           <div className="flex items-center gap-3 bg-black/20 p-2 rounded-none border-2 border-black">
-             <button onClick={()=>setSimSpeed('normal')} className={`px-5 py-3 text-xs font-black transition-all ${simSpeed === 'normal' ? 'bg-black text-white' : 'text-gray-500 hover:text-white'}`}>NORMAL</button>
-             <button onClick={()=>setSimSpeed('fast')} className={`px-5 py-3 text-xs font-black transition-all ${simSpeed === 'fast' ? 'bg-black text-white' : 'text-gray-500 hover:text-white'}`}>HIZLI</button>
-             <button onClick={()=>setSimSpeed('hyper')} className={`px-5 py-3 text-xs font-black transition-all ${simSpeed === 'hyper' ? 'bg-black text-white' : 'text-gray-500 hover:text-white'}`}>HİPER</button>
+             <button onClick={()=>setSimSpeed('normal')} className={`game-button px-5 py-3 text-xs font-black transition-all ${simSpeed === 'normal' ? 'game-button-selected bg-black text-white' : 'text-gray-500 hover:text-white'}`}>NORMAL</button>
+             <button onClick={()=>setSimSpeed('fast')} className={`game-button px-5 py-3 text-xs font-black transition-all ${simSpeed === 'fast' ? 'game-button-selected bg-black text-white' : 'text-gray-500 hover:text-white'}`}>HIZLI</button>
+             <button onClick={()=>setSimSpeed('hyper')} className={`game-button px-5 py-3 text-xs font-black transition-all ${simSpeed === 'hyper' ? 'game-button-selected bg-black text-white' : 'text-gray-500 hover:text-white'}`}>HİPER</button>
           </div>
 
           {currentMatchMinute && <div className="bg-red-600 px-8 py-3 border-2 border-black shadow-[5px_5px_0px_0px_#000] font-mono font-black text-3xl">{currentMatchMinute}&apos;</div>}
@@ -364,7 +364,7 @@ export default function Tournament({ userRating }: { userRating: number }) {
           <button
             onClick={playRound}
             disabled={isSimulating}
-            className="w-full border-4 border-black bg-yellow-500 px-6 py-6 text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:bg-yellow-400 disabled:opacity-60 disabled:grayscale"
+            className="game-button game-button-major w-full border-4 border-black bg-yellow-500 px-6 py-6 text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:bg-yellow-400 disabled:opacity-60 disabled:grayscale"
           >
             <span className="flex items-center justify-center gap-3 text-3xl lg:text-4xl font-black italic tracking-tighter">
               <Play size={32} fill="currentColor" />
@@ -378,8 +378,8 @@ export default function Tournament({ userRating }: { userRating: number }) {
 
         {(champion || isEliminated) && (
            <div className="grid grid-cols-2 gap-6 mt-6">
-              <button onClick={()=>setShowHeadlineOverlay(true)} className="py-6 bg-red-600 text-white font-black text-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">MANŞETLERİ AÇ</button>
-              <button onClick={()=>setShowPitchPreview(true)} className="py-6 bg-blue-600 text-white font-black text-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase">Kadroyu Gör</button>
+              <button onClick={()=>setShowHeadlineOverlay(true)} className="game-button game-button-major py-6 bg-red-600 text-white font-black text-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">MANŞETLERİ AÇ</button>
+              <button onClick={()=>setShowPitchPreview(true)} className="game-button game-button-major py-6 bg-blue-600 text-white font-black text-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase">Kadroyu Gör</button>
            </div>
         )}
       </div>

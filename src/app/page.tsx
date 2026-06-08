@@ -126,13 +126,13 @@ export default function Home() {
             <button
               type="button"
               onClick={handleContactCopy}
-              className="grid h-11 w-11 place-items-center border border-white/20 text-yellow-500 transition-colors hover:bg-white/10"
+              className="game-button grid h-11 w-11 place-items-center border border-white/20 text-yellow-500 transition-colors hover:bg-white/10"
               aria-label="Mail adresini kopyala"
               title="Mail adresini kopyala"
             >
               <Mail size={20} />
             </button>
-            <button onClick={toggleTheme} className="p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
+            <button onClick={toggleTheme} className="game-button p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
            </div>
@@ -163,13 +163,13 @@ export default function Home() {
           <button
             type="button"
             onClick={handleContactCopy}
-            className={`grid h-12 w-12 place-items-center border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-white text-black'}`}
+            className={`game-button grid h-12 w-12 place-items-center border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-white text-black'}`}
             aria-label="Mail adresini kopyala"
             title="Mail adresini kopyala"
           >
             <Mail size={22} />
           </button>
-          <button onClick={toggleTheme} className={`p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
+          <button onClick={toggleTheme} className={`game-button p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
             {isDark ? <Sun size={24} /> : <Moon size={24} />}
           </button>
         </div>
@@ -207,7 +207,7 @@ export default function Home() {
                  <div className="grid grid-cols-2 gap-2">
                     {FORMATIONS.map(f => (
                       <button key={f.id} onClick={() => handleFormationSelect(f.id)} 
-                        className={`p-3 text-xs font-black border-2 border-black transition-all ${pendingFormation === f.id ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
+                        className={`game-button p-3 text-xs font-black border-2 border-black transition-all ${pendingFormation === f.id ? 'game-button-selected bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
                         {f.id}
                       </button>
                     ))}
@@ -222,7 +222,7 @@ export default function Home() {
                  <div className="flex flex-col gap-2">
                     {(['Gegenpress', 'Balanced', 'ParkTheBus'] as MentalityType[]).map(m => (
                       <button key={m} onClick={() => handleMentalitySelect(m)} 
-                        className={`p-3 text-xs font-black border-2 border-black transition-all text-left px-5 ${pendingMentality === m ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
+                        className={`game-button p-3 text-xs font-black border-2 border-black transition-all text-left px-5 ${pendingMentality === m ? 'game-button-selected bg-black text-white' : 'bg-white text-black hover:bg-zinc-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none'}`}>
                         {m === 'Gegenpress' ? 'HÜCUM (GEGENPRESS)' : m === 'ParkTheBus' ? 'SAVUNMA (OTOBÜSÜ ÇEK)' : 'DENGELİ'}
                         {m === 'Gegenpress' && <Flame size={12} className="inline ml-2 text-red-500" />}
                        {m === 'ParkTheBus' && <Shield size={12} className="inline ml-2 text-blue-500" />}
@@ -237,7 +237,7 @@ export default function Home() {
                     <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-yellow-500">ZORLUK</h3>
                  </div>
                  <button onClick={() => setPendingBlindMode(!pendingBlindMode)} 
-                   className={`w-full p-4 text-xs font-black border-2 border-black transition-all ${pendingBlindMode ? 'bg-purple-700 text-white shadow-none translate-x-[2px] translate-y-[2px]' : 'bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-100'}`}>
+                   className={`game-button w-full p-4 text-xs font-black border-2 border-black transition-all ${pendingBlindMode ? 'game-button-selected bg-purple-700 text-white' : 'bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-100'}`}>
                    {pendingBlindMode ? 'GİZLİLİK MODU (??)' : 'KLASİK MOD (REYTING)'}
                  </button>
               </div>
@@ -246,7 +246,7 @@ export default function Home() {
                  <button
                    onClick={handleSetupStart}
                    disabled={!pendingFormation || !pendingMentality}
-                   className={`w-full py-5 border-4 border-black font-black text-2xl italic tracking-tighter transition-all ${
+                   className={`game-button game-button-major w-full py-5 border-4 border-black font-black text-2xl italic tracking-tighter transition-all ${
                      pendingFormation && pendingMentality
                        ? 'bg-yellow-500 text-black shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none'
                        : 'bg-zinc-300 text-zinc-500 cursor-not-allowed opacity-60'
@@ -271,7 +271,7 @@ export default function Home() {
               <button 
                 onClick={() => canStartTournament && setAppPhase('tournament')}
                 disabled={!canStartTournament}
-                className={`mt-10 w-full py-8 font-black text-4xl italic tracking-tighter transition-all border-4 border-black
+                className={`game-button game-button-major mt-10 w-full py-8 font-black text-4xl italic tracking-tighter transition-all border-4 border-black
                   ${!canStartTournament
                     ? 'bg-zinc-300 text-zinc-500 cursor-not-allowed opacity-50' 
                     : 'bg-green-600 text-white shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-0 active:translate-y-0'}
