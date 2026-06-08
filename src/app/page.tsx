@@ -7,10 +7,13 @@ import Tournament from '@/components/Tournament';
 import SquadPanel from '@/components/SquadPanel';
 import ShareExportPanel from '@/components/ShareExportPanel';
 import { useTeamStore, MentalityType } from '@/store/useTeamStore';
-import { Sun, Moon, Shield, Flame, Activity, Settings2, Trophy, PencilLine } from 'lucide-react';
+import { Sun, Moon, Shield, Flame, Activity, Settings2, Trophy, PencilLine, Mail } from 'lucide-react';
 import { FORMATIONS, FormationType } from '@/lib/formations';
 import { decodeShareCode } from '@/lib/shareCode';
 import { saveTeamSnapshot } from '@/lib/localStats';
+
+const CONTACT_EMAIL = 'efsane11site@proton.me';
+const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}?subject=EFSANE-11%20Iletisim`;
 
 export default function Home() {
   const selectedPlayers = useTeamStore((state) => state.selectedPlayers);
@@ -114,9 +117,19 @@ export default function Home() {
               <Trophy size={24} className="text-yellow-500" />
               <h1 className="text-2xl font-black italic tracking-tighter uppercase">TURNUVA MODU</h1>
            </div>
-           <button onClick={toggleTheme} className="p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
-           </button>
+           <div className="flex items-center gap-3">
+            <a
+              href={CONTACT_MAILTO}
+              className="grid h-11 w-11 place-items-center border border-white/20 text-yellow-500 transition-colors hover:bg-white/10"
+              aria-label="Iletisim"
+              title="Iletisim"
+            >
+              <Mail size={20} />
+            </a>
+            <button onClick={toggleTheme} className="p-3 border border-white/20 hover:bg-white/10 transition-colors rounded-none">
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+           </div>
         </header>
         <div className="flex-1 p-4 lg:p-10 overflow-y-auto">
           <Tournament userRating={teamRating} />
@@ -135,9 +148,19 @@ export default function Home() {
            <div className="text-xs uppercase font-bold tracking-[0.2em] opacity-40 mt-1">Kadro Kur • Simüle Et • Kazan</div>
         </div>
 
-        <button onClick={toggleTheme} className={`p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
-          {isDark ? <Sun size={24} /> : <Moon size={24} />}
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href={CONTACT_MAILTO}
+            className={`grid h-12 w-12 place-items-center border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-white text-black'}`}
+            aria-label="Iletisim"
+            title="Iletisim"
+          >
+            <Mail size={22} />
+          </a>
+          <button onClick={toggleTheme} className={`p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all ${isDark ? 'bg-zinc-800 text-yellow-500' : 'bg-yellow-400 text-black'}`}>
+            {isDark ? <Sun size={24} /> : <Moon size={24} />}
+          </button>
+        </div>
 
         {easterEgg && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-md">
@@ -248,6 +271,25 @@ export default function Home() {
                 {!isTeamFull ? `KADROYU TAMAMLA (${selectedPlayers.filter(p => p !== null).length}/11)` : !hasCaptain ? 'KAPTAN SEC' : 'TURNUVAYI BAŞLAT ⚔️'}
               </button>
               {setupComplete && <ShareExportPanel isTeamFull={isTeamFull} hasCaptain={hasCaptain} />}
+              <section className={`mt-6 border-2 border-black p-4 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] ${isDark ? 'bg-zinc-900 text-white' : 'bg-white text-black'}`}>
+                <div className="flex items-start gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center border-2 border-black bg-yellow-500 text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <Mail size={20} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50">Iletisim</p>
+                    <a
+                      href={CONTACT_MAILTO}
+                      className="mt-1 block break-all text-sm font-black text-yellow-500 underline-offset-4 hover:underline"
+                    >
+                      {CONTACT_EMAIL}
+                    </a>
+                    <p className="mt-2 text-[10px] font-black uppercase tracking-[0.16em] opacity-45 leading-relaxed">
+                      Reklam ve is birligi talepleri icin buradan ulasabilirsiniz.
+                    </p>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
 
