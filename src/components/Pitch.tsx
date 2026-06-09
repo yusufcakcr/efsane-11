@@ -2,16 +2,18 @@
 
 import DroppableSlot from './DroppableSlot';
 import { useTeamStore } from '@/store/useTeamStore';
-import { FORMATIONS, PositionConfig } from '@/lib/formations';
+import { FORMATIONS, FormationType, PositionConfig } from '@/lib/formations';
 
 interface PitchProps {
   elementId?: string;
+  previewFormationId?: FormationType | null;
 }
 
-export default function Pitch({ elementId = 'pitch-container' }: PitchProps) {
+export default function Pitch({ elementId = 'pitch-container', previewFormationId = null }: PitchProps) {
   const selectedPlayers = useTeamStore((state) => state.selectedPlayers);
   const teamRating = useTeamStore((state) => state.teamRating);
-  const currentFormationId = useTeamStore((state) => state.formation) || '4-3-3';
+  const storedFormationId = useTeamStore((state) => state.formation);
+  const currentFormationId = previewFormationId ?? storedFormationId ?? '4-3-3';
   const blindMode = useTeamStore(state => state.blindMode);
   const theme = useTeamStore(state => state.theme);
   const squadName = useTeamStore(state => state.squadName);

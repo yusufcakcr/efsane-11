@@ -266,7 +266,7 @@ export default function Home() {
            {/* CENTER: PITCH */}
           <div className="flex-1 p-4 lg:p-12 flex flex-col items-center justify-center overflow-y-auto bg-black/5">
             <div className="w-full max-w-2xl relative">
-              <Pitch />
+              <Pitch previewFormationId={setupComplete ? null : pendingFormation} />
               
               <button 
                 onClick={() => canStartTournament && setAppPhase('tournament')}
